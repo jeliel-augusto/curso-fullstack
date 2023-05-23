@@ -1,24 +1,44 @@
-const games = [
-  {
-    id: 1,
-    name: `Call of Duty`,
-    publisher: `Activision`,
-  },
-  {
-    id: 2,
-    name: `God of War`,
-    publisher: `Santa Monica`,
-  },
-];
+import { GameRepository } from "./../repositories/GameRepository";
+import { PublisherService } from "./PublisherService";
+/**
+ * Um service --> possui um repositório
+ * Um service --> consome outros serviços
+ */
 export class GameService {
-  static getGames() {
-    return games;
+  static async list() {
+    return await GameRepository.getAllGames();
   }
-  static updateGameById(id: number, obj: { name: string }) {
-    const gameExistent = games.find((game) => game.id === id);
-    if (gameExistent) {
-      gameExistent.name = obj.name;
-    }
-    return gameExistent;
+  static async save(game: any) {
+    this.validateGame(game);
+    await PublisherService.getPublisherById(game.id_publisher);
+    const gameSaved = await GameRepository.save(game);
+    return gameSaved;
+  }
+  static async update(id: number, game: any) {
+    await GameRepository.getById(id);
+    this.validateGame(game);
+    const gameUpdated = await GameRepository.update(id, game);
+    return gameUpdated;
+  }
+  static async linkGameToPublisher(id_game: number, id_publisher: number) {
+    await GameRepository.getById(id_game);
+    await PublisherService.getPublisherById(id_publisher);
+    const resultLink = await GameRepository.linkGameToPublisher(
+      id_publisher,
+      id_game
+    );
+    return resultLink;
+  }
+  static async delete(id: number) {
+    await GameRepository.getById(id);
+    const gameDeleted = await GameRepository.delete(id);
+    return gameDeleted;
+  }
+  static validateGame(game: any) {
+    if (game.name.length === 0) throw new Error("game nao tem nome");
+    if (game.img_src.length === 0) throw new Error("game nao tem imagem");
+    if (game.img_src.length > 200)
+      throw new Error("link da imagem muito longa!");
+    if (!game.id_publisher) throw new Error("Game não possui publicadora!");
   }
 }
