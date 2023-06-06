@@ -34,6 +34,9 @@ export class GameService {
     const gameDeleted = await GameRepository.delete(id);
     return gameDeleted;
   }
+  static async getById(id: number) {
+    return await GameRepository.getById(id);
+  }
   static validateGame(game: any) {
     if (game.name.length === 0) throw new Error("game nao tem nome");
     if (game.img_src.length === 0) throw new Error("game nao tem imagem");
