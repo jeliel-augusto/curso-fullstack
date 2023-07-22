@@ -37,6 +37,18 @@ export class GameService {
   static async getById(id: number) {
     return await GameRepository.getById(id);
   }
+  static async getByField(field: string, value: string) {
+    this.validateFieldSearch(field, value);
+    return await GameRepository.getByField(field, value);
+  }
+  static validateFieldSearch(field: string, value: string) {
+    if (field !== "id" && field !== "name" && field !== "publisher") {
+      throw new Error("Busca por campo inválida!");
+    }
+    if (!value || value.length === 0) {
+      throw new Error("Descrição da busca por campo, inválida!");
+    }
+  }
   static validateGame(game: any) {
     if (game.name.length === 0) throw new Error("game nao tem nome");
     if (game.img_src.length === 0) throw new Error("game nao tem imagem");

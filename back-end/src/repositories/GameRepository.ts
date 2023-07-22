@@ -1,6 +1,6 @@
 import { knexConnection } from "../db/db";
 import { Game } from "../entities/Game";
-
+import { PublisherRepository } from "./PublisherRepository";
 export class GameRepository {
   static async save(game: Game) {
     const resultInsert = await knexConnection.raw(`
@@ -29,11 +29,24 @@ export class GameRepository {
       img_src: string;
       id_publisher?: number;
     }>;
-    const games = entities.map(
-      (entity) =>
-        new Game(entity.id, entity.name, entity.img_src, entity.id_publisher)
-    );
+    const games = await this.mapGameEntities(entities);
     return games;
+  }
+  static async mapGameEntities(entities: Partial<Game>[]) {
+    return await Promise.all(
+      entities.map(async (entity) => {
+        const game = new Game(
+          entity.id!,
+          entity.name!,
+          entity.img_src!,
+          entity.id_publisher
+        );
+        if (game.id_publisher) {
+          game.publisher = await PublisherRepository.getById(game.id_publisher);
+        }
+        return game;
+      })
+    );
   }
   static async update(id: number, gameUpdated: Game) {
     const resultUpdate = await knexConnection.raw(`
@@ -43,6 +56,30 @@ export class GameRepository {
         WHERE id = ${id}
     `);
     return this.getById(id);
+  }
+  static async getByField(field: string, value: string) {
+    let whereClause = ` WHERE \`${field.replace("'", "").replace("`", "")}\` `;
+    if (field === "name") {
+      whereClause += ` LIKE '%${value}%'`;
+    } else if (field === "publisher") {
+      whereClause = ` LEFT JOIN publishers ON id_publisher = publishers.id WHERE publishers.name LIKE '%${value}%'`;
+    } else if (field === "id") {
+      whereClause += ` = '${value}'`;
+    } else {
+      whereClause = "WHERE 1";
+    }
+    const list = await knexConnection.raw(`
+      SELECT * FROM games ${whereClause}
+    `);
+
+    const entities = list[0] as Array<{
+      id: number;
+      name: string;
+      img_src: string;
+      id_publisher?: number;
+    }>;
+    const games = await this.mapGameEntities(entities);
+    return games;
   }
   static async delete(id: number) {
     const resultDelete = await knexConnection.raw(`

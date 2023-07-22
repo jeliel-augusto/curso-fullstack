@@ -11,14 +11,11 @@ export default function Home() {
 
   useEffect(() => {
     // quando este componente for renderizado, faça
-    const listOfGames = GamesAPI.getGames();
-    setGames(listOfGames);
   }, []);
 
   return (
     <>
-      <Header />
-      <Sidebar />
+      <p>oi</p>
     </>
   );
 }

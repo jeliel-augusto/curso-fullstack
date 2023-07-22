@@ -10,6 +10,24 @@ export class GameController {
       response.status(500).json({ message: e.message });
     }
   }
+  static async getByField(request: Request, response: Response) {
+    try {
+      const { field, value } = request.query;
+      const listOfGames = await GameService.getByField(
+        field as string,
+        value as string
+      );
+      response.status(200).json(listOfGames);
+    } catch (e: any) {
+      if (
+        e.message === "Busca por campo inválida!" ||
+        e.message === "Descrição da busca por campo, inválida!"
+      ) {
+        return response.status(400).json({ message: e.message });
+      }
+      response.status(500).json({ message: e.message });
+    }
+  }
   static async update(request: Request, response: Response) {
     try {
       console.log(`metodo update`);
