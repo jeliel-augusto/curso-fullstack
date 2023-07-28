@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { MdEdit, MdDelete } from "react-icons/md";
 export type TableRowsData = Array<{ id: string; cells: Cell[] }>;
 interface Cell {
@@ -11,6 +13,7 @@ interface TableRowProps {
   rows: TableRowsData;
 }
 export const TableRows: React.FC<TableRowProps> = ({ rows }) => {
+  const router = useRouter();
   return rows.map((row) => (
     <tr key={row.id}>
       {row.cells.map((cell, index) => (
@@ -22,9 +25,11 @@ export const TableRows: React.FC<TableRowProps> = ({ rows }) => {
         </td>
       ))}
       <td className="w-1/12 p-3">
-        <button className="text-2xl text-orange-400">
-          <MdEdit />
-        </button>
+        <Link href={router.pathname + "/edit/" + row.id}>
+          <button className="text-2xl text-orange-400">
+            <MdEdit />
+          </button>
+        </Link>
         <button className="text-2xl text-red-500">
           <MdDelete />
         </button>

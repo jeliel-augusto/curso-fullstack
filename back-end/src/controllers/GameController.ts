@@ -10,6 +10,21 @@ export class GameController {
       response.status(500).json({ message: e.message });
     }
   }
+  static async getById(request: Request, response: Response) {
+    try {
+      const gameId = request.params.id;
+      const gameResult = await GameService.getById(+gameId);
+      response.status(200).json(gameResult);
+    } catch (e: any) {
+      if (
+        e.message === "game não encontrado" ||
+        e.message === "Publicadora não encontrada!"
+      ) {
+        return response.status(404).json({ message: e.message });
+      }
+      response.status(500).json({ message: e.message });
+    }
+  }
   static async getByField(request: Request, response: Response) {
     try {
       const { field, value } = request.query;

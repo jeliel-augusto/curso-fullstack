@@ -34,6 +34,7 @@ export class GameService {
     const gameDeleted = await GameRepository.delete(id);
     return gameDeleted;
   }
+
   static async getById(id: number) {
     return await GameRepository.getById(id);
   }

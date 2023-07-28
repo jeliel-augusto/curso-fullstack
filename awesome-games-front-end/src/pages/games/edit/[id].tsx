@@ -48,14 +48,16 @@ export default function EditGamePage() {
     }
   }, [gameName, gameImage, id, gamePublisher, router]);
   const getById = useCallback(async () => {
-    const gameToUpdate = await GamesAPI.getById(+id);
-    setGameName(gameToUpdate.name);
-    setGameImage(gameToUpdate.img_src);
-    if (
-      gameToUpdate.id_publisher !== undefined &&
-      gameToUpdate.id_publisher > 0
-    ) {
-      setGamePublisher(gameToUpdate.id_publisher?.toString());
+    if (!isNaN(+id)) {
+      const gameToUpdate = await GamesAPI.getById(+id);
+      setGameName(gameToUpdate.name);
+      setGameImage(gameToUpdate.img_src);
+      if (
+        gameToUpdate.id_publisher !== undefined &&
+        gameToUpdate.id_publisher > 0
+      ) {
+        setGamePublisher(gameToUpdate.id_publisher?.toString());
+      }
     }
   }, [id]);
   useEffect(() => {
@@ -107,7 +109,7 @@ export default function EditGamePage() {
             onClick={updateGame}
             disabled={isFormInvalid}
           >
-            Cadastrar
+            Atualizar
           </Button>
           <Link href={"/games/"}>
             <Button className="bg-red-400">Cancelar</Button>
