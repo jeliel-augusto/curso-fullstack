@@ -14,6 +14,10 @@ export class CompraService {
     const result = await CompraRepository.getComprasByClient(idCliente);
     return result;
   }
+  static async getItensCompraByGame(idGame: number) {
+    const result = await CompraRepository.getItensComprasByGame(idGame);
+    return result;
+  }
   static async validateItensCompra(itens: ItemCompra[]) {
     for (const item of itens) {
       if (!(item.qtd > 0))

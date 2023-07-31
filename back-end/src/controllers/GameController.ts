@@ -85,6 +85,12 @@ export class GameController {
       if (e.message === "game não encontrado") {
         return response.status(404).json({ message: e.message });
       }
+      if (
+        e.message ===
+        "Impossível deletar game, pois há compras relacionadas a ele."
+      ) {
+        return response.status(400).json({ message: e.message });
+      }
       response.status(500).json({ message: e.message });
     }
   }

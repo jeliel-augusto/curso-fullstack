@@ -14,6 +14,9 @@ export class GamesAPI {
     );
     return request.data;
   }
+  static async delete(id: number): Promise<void> {
+    await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/games/${id}`);
+  }
   static async getById(id: number) {
     const request = await axios.get<Game>(
       `${process.env.NEXT_PUBLIC_API_URL}/games/${id}`

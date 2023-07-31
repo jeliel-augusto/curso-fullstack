@@ -2,7 +2,7 @@ import { TableRows, TableRowsData } from "./row";
 
 interface TableBodyProps {
   onEdit: () => {};
-  onDelete: () => {};
+  onDelete: (id: string) => {};
   rows: TableRowsData;
 }
 export const TableBody: React.FC<TableBodyProps> = ({

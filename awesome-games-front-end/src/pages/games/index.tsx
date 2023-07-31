@@ -9,7 +9,9 @@ import {
 } from "../../components/crud/search/CrudSearch";
 import { Button } from "../../components/button";
 import Link from "next/link";
-
+import { ConfirmDelete } from "../../components/dialogs/ConfirmDelete";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 const columns = ["ID", "Nome", "Publicadora", "Imagem", "Ação"];
 const fieldsToSearch: CrudDataProperty[] = [
   {
@@ -30,8 +32,14 @@ export default function GamesPage() {
   const [gamesTableRowsData, setGamesTableRowsData] = useState<TableRowsData>(
     []
   );
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(0);
   const onEdit = useCallback(async () => {}, []);
-  const onDelete = useCallback(async () => {}, []);
+  const onDelete = useCallback(async (id: string) => {
+    setIdToDelete(+id);
+    setShowConfirmDelete(true);
+  }, []);
+
   const fetchGames = useCallback(async () => {
     try {
       const listOfGames = await GamesAPI.getGames();
@@ -40,6 +48,23 @@ export default function GamesPage() {
       console.error(e);
     }
   }, []);
+  const onConfirmDelete = useCallback(async () => {
+    try {
+      await GamesAPI.delete(idToDelete);
+      toast("Game deletado com sucesso.", {
+        type: "success",
+      });
+    } catch (e) {
+      const error = ((e as AxiosError).response?.data as any)?.message;
+      if (error) {
+        toast("Game falhou ao deletar. Erro: " + error, {
+          type: "error",
+        });
+      }
+    }
+    setShowConfirmDelete(false);
+    fetchGames();
+  }, [fetchGames, idToDelete]);
 
   const searchGames = useCallback(
     async (field: string, value: string) => {
@@ -92,6 +117,11 @@ export default function GamesPage() {
   return (
     <div className="w-full">
       <CrudSearch fieldsToSearch={fieldsToSearch} onSearch={searchGames} />
+      <ConfirmDelete
+        isOpen={showConfirmDelete}
+        closeModal={() => setShowConfirmDelete(false)}
+        onYes={onConfirmDelete}
+      />
       <Table
         columns={columns}
         onDelete={onDelete}

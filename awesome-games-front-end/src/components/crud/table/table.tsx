@@ -5,7 +5,7 @@ import { TableRowsData } from "./row";
 interface TableProps {
   columns: string[];
   onEdit: () => {};
-  onDelete: () => {};
+  onDelete: (id: string) => {};
   rows: TableRowsData;
 }
 export const Table: React.FC<TableProps> = ({

@@ -9,10 +9,10 @@ interface Cell {
 }
 interface TableRowProps {
   onEdit: () => {};
-  onDelete: () => {};
+  onDelete: (id: string) => {};
   rows: TableRowsData;
 }
-export const TableRows: React.FC<TableRowProps> = ({ rows }) => {
+export const TableRows: React.FC<TableRowProps> = ({ rows, onDelete }) => {
   const router = useRouter();
   return rows.map((row) => (
     <tr key={row.id}>
@@ -30,7 +30,10 @@ export const TableRows: React.FC<TableRowProps> = ({ rows }) => {
             <MdEdit />
           </button>
         </Link>
-        <button className="text-2xl text-red-500">
+        <button
+          className="text-2xl text-red-500"
+          onClick={() => onDelete(row.id)}
+        >
           <MdDelete />
         </button>
       </td>

@@ -1,4 +1,5 @@
 import { GameRepository } from "./../repositories/GameRepository";
+import { CompraService } from "./CompraService";
 import { PublisherService } from "./PublisherService";
 /**
  * Um service --> possui um repositório
@@ -30,6 +31,7 @@ export class GameService {
     return resultLink;
   }
   static async delete(id: number) {
+    await this.validateDeleteGame(id);
     await GameRepository.getById(id);
     const gameDeleted = await GameRepository.delete(id);
     return gameDeleted;
@@ -49,6 +51,13 @@ export class GameService {
     if (!value || value.length === 0) {
       throw new Error("Descrição da busca por campo, inválida!");
     }
+  }
+  static async validateDeleteGame(gameId: number) {
+    const itens = await CompraService.getItensCompraByGame(gameId);
+    if (itens.length > 0)
+      throw new Error(
+        "Impossível deletar game, pois há compras relacionadas a ele."
+      );
   }
   static validateGame(game: any) {
     if (game.name.length === 0) throw new Error("game nao tem nome");

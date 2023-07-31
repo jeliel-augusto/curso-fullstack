@@ -31,6 +31,16 @@ export class CompraRepository {
     // if(idCompraResult === null) throw error
     return await this.getCompraById(idCompraResult);
   }
+  static async getItensComprasByGame(idGame: number) {
+    const itensCompra = await knexConnection.raw(`
+      SELECT * FROM item_compra WHERE id_games = ${idGame}
+    `);
+    const entitiesItensCompras = itensCompra[0] as Array<ItemCompra>;
+    return entitiesItensCompras.map(
+      (value) =>
+        new ItemCompra(value.id_compra, value.id_games, value.qtd, value.preco)
+    );
+  }
   static async getComprasByClient(idClient: number) {
     const compras = await knexConnection.raw(`
       SELECT * FROM compra WHERE id_cliente = ${idClient}

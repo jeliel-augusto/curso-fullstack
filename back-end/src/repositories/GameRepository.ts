@@ -85,6 +85,7 @@ export class GameRepository {
     const resultDelete = await knexConnection.raw(`
       DELETE FROM games WHERE id = ${id}
     `);
+
     return resultDelete;
   }
   static async getById(id: number) {
