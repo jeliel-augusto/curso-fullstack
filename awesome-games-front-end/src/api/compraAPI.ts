@@ -5,7 +5,10 @@ import { ItemCompra } from "../models/ItemCompra";
 export class CompraAPI {
   static async getCompras(): Promise<Compra[]> {
     const request = await axios.get<Compra[]>(
-      `${process.env.NEXT_PUBLIC_API_URL}/client/2/purchases`
+      `${process.env.NEXT_PUBLIC_API_URL}/client/purchases`,
+      {
+        withCredentials: true,
+      }
     );
     return request.data;
   }
@@ -14,8 +17,11 @@ export class CompraAPI {
     idUser: number
   ): Promise<Compra> {
     const request = await axios.post<Compra>(
-      `${process.env.NEXT_PUBLIC_API_URL}/client/${idUser}/buy`,
-      itensCompra
+      `${process.env.NEXT_PUBLIC_API_URL}/client/buy`,
+      itensCompra,
+      {
+        withCredentials: true,
+      }
     );
     return request.data;
   }

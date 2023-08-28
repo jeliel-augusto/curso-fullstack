@@ -5,6 +5,8 @@ import { Game } from "../models/Game";
 import { GamesAPI } from "../api/gamesAPI";
 import { Header } from "../components/header/Header";
 import { Sidebar } from "../components/sidebar/Sidebar";
+import { GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
 
 export default function Home() {
   const [games, setGames] = useState<Game[]>([]);
@@ -18,4 +20,21 @@ export default function Home() {
       <p>oi</p>
     </>
   );
+}
+// server-side props
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { req } = context;
+  const cookies = parseCookies({ req });
+  const token = cookies["token"];
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/auth/sign-in",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 }

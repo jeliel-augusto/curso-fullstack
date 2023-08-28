@@ -38,7 +38,7 @@ export class AuthRepository {
       profilePicSrc: string;
     }>;
     const entityById = entities[0];
-    if (!entityById) throw new Error("Cliente não encontrado");
+    if (!entityById) throw new Error("Usuário não encontrado");
     return new User(
       entityById.id,
       entityById.email,

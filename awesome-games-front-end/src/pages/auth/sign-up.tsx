@@ -6,31 +6,35 @@ import { toast } from "react-toastify";
 import { AuthAPI } from "../../api/authAPI";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../context/AuthContext";
-import { GetServerSidePropsContext } from "next";
-import { parseCookies } from "nookies";
 
 const SignInPage = () => {
   const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
+  const [name, setName] = useState<string>();
+  const [profilePicSrc, setProfilePicSrc] = useState<string>();
+
   const router = useRouter();
   const { setIsAuthenticated } = useContext(AuthContext);
-  const [password, setPassword] = useState<string>();
   const onSubmit = useCallback(async () => {
     try {
-      await AuthAPI.login(email!, password!);
+      await AuthAPI.create(email!, password!, profilePicSrc!, name!);
       router.push(`/compras`);
       setIsAuthenticated(true);
     } catch (e) {
       console.error(e);
       toast("Erro ao realizar login: ", { type: "error" });
     }
-  }, [email, password]);
+  }, [email, router, setIsAuthenticated, password, name, profilePicSrc]);
   return (
     <div className="h-full flex-col flex justify-center items-center">
-      <div className="flex flex-col  h-1/2 w-1/2 shadow-lg rounded-lg items-center bg-slate-200 justify-center">
+      <div className="flex flex-col  w-1/2 shadow-lg rounded-lg items-center bg-slate-200 justify-center">
         <img src="/images/logo.png" className="w-[60px] rounded-full"></img>
 
-        <h1>Login Awesome Games FrontEnd</h1>
+        <h1>Cadastro Awesome Games FrontEnd</h1>
 
+        <div className="px-9 w-full">
+          <Input value={name} onChange={(text) => setName(text)} label="Nome" />
+        </div>
         <div className="px-9 w-full">
           <Input
             value={email}
@@ -47,16 +51,24 @@ const SignInPage = () => {
             type="password"
           />
         </div>
+
+        <div className="px-9 w-full my-1">
+          <Input
+            value={profilePicSrc}
+            onChange={(text) => setProfilePicSrc(text)}
+            label="URL foto de perfil"
+          />
+        </div>
         <Button
           className="mt-5 w-[120px]"
-          disabled={!email || !password}
+          disabled={!email || !password || !profilePicSrc || !name}
           onClick={onSubmit}
         >
-          Entrar
+          Cadastrar
         </Button>
-        <Link href="/auth/sign-up">
+        <Link href="/auth/sign-in">
           <span className="text-blue-400 my-3 pb-3 flex">
-            Não possui conta? Clique aqui.
+            Já possui conta? Clique aqui.
           </span>
         </Link>
       </div>
@@ -64,19 +76,3 @@ const SignInPage = () => {
   );
 };
 export default SignInPage;
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { req } = context;
-  const cookies = parseCookies({ req });
-  const token = cookies["token"];
-  if (token) {
-    return {
-      redirect: {
-        destination: "/compras",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {},
-  };
-}

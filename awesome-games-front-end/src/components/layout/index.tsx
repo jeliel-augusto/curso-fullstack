@@ -4,6 +4,8 @@ import { Sidebar } from "../sidebar/Sidebar";
 import { Content } from "./content";
 import { HeaderContext } from "../../context/HeaderContext";
 import { AuthContext } from "../../context/AuthContext";
+import { GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
 
 export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   const [headerTitle, setHeaderTitle] = useState("Games");

@@ -13,7 +13,11 @@ import Link from "next/link";
 import { Button } from "../../components/button";
 import { formatDateTime } from "../../utils/formatDateTime";
 import { formatItemCompraToHTML } from "../../utils/formatItemCompraToHTML";
+import { parseCookies } from "nookies";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { AuthContext } from "../../context/AuthContext";
 const columns = ["ID", "Data Hora", "Itens Comprados", "Ação"];
+
 const fieldsToSearch: CrudDataProperty[] = [
   {
     name: "ID",
@@ -40,10 +44,12 @@ export default function ComprasPage() {
     setIdToDelete(+id);
     setShowConfirmDelete(true);
   }, []);
+  const { setIsAuthenticated } = useContext(AuthContext);
   const { setHeaderTitle } = useContext(HeaderContext);
   useEffect(() => {
     setHeaderTitle("Compras");
-  }, [setHeaderTitle]);
+    setIsAuthenticated(true);
+  }, [setHeaderTitle, setIsAuthenticated]);
 
   const fetchCompras = useCallback(async () => {
     try {
@@ -127,4 +133,23 @@ export default function ComprasPage() {
       </div>
     </div>
   );
+}
+
+// server-side props
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { req } = context;
+  const cookies = parseCookies({ req });
+  const token = cookies["token"];
+  console.log(`cookie token: ${token}`);
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/auth/sign-in",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 }
