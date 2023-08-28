@@ -1,7 +1,10 @@
 import { useContext, useState } from "react";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
+import { AuthContext } from "../../context/AuthContext";
 export const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
+  const { isAuthenticated } = useContext(AuthContext);
+  if (!isAuthenticated) return <></>;
   return (
     <section
       className={`bg-main-black min-h-screen h-full ${
