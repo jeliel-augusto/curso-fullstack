@@ -4,8 +4,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const GameRoutes_1 = require("./routes/GameRoutes");
+const PublisherRoutes_1 = require("./routes/PublisherRoutes");
+const ClientRoutes_1 = require("./routes/ClientRoutes");
+const CompraRoutes_1 = require("./routes/CompraRoutes");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-app.listen(3000, () => {
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
+app.use(GameRoutes_1.GameRoutes);
+app.use(PublisherRoutes_1.PublisherRoutes);
+app.use(CompraRoutes_1.CompraRoutes);
+app.use(ClientRoutes_1.ClientRoutes);
+app.listen(3333, () => {
     // server started
     console.log("server started ok");
 });

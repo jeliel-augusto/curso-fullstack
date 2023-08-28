@@ -4,10 +4,24 @@ import { ClientService } from "./ClientService";
 import { GameService } from "./GameService";
 
 export class CompraService {
+  static async getCompraById(idCompra: number) {
+    const compra = await CompraRepository.getCompraById(idCompra);
+    return compra;
+  }
+  static async deleteCompra(idCompra: number) {
+    await CompraRepository.getCompraById(idCompra);
+    await CompraRepository.deleteCompra(idCompra);
+  }
+
   static async buyGame(idCliente: number, itensCompra: ItemCompra[]) {
     await ClientService.getById(idCliente);
     await this.validateItensCompra(itensCompra);
     const result = await CompraRepository.buyGame(itensCompra, idCliente);
+    return result;
+  }
+  static async updateBuyGame(itensCompra: ItemCompra[], idCompra: number) {
+    await this.validateItensCompra(itensCompra);
+    const result = await CompraRepository.updateBuyGame(itensCompra, idCompra);
     return result;
   }
   static async getComprasByClient(idCliente: number) {

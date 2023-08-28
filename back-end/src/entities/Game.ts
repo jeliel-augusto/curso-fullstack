@@ -5,17 +5,20 @@ export class Game {
   name: string;
   id_publisher?: number;
   publisher?: Publisher;
+  price?: number;
   img_src: string;
   constructor(
     id: number,
     name: string,
     img_src: string,
-    id_publisher?: number
+    id_publisher?: number,
+    price?: number
   ) {
     this.id = id;
     this.name = name;
     this.img_src = img_src;
     this.id_publisher = id_publisher;
+    this.price = price;
   }
 }
 /**

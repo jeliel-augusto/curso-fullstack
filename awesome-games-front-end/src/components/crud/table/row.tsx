@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { MdEdit, MdDelete } from "react-icons/md";
 export type TableRowsData = Array<{ id: string; cells: Cell[] }>;
 interface Cell {
-  type: "img" | "string";
+  type: "img" | "string" | "html";
   data: string;
   size: number;
 }
@@ -21,6 +21,12 @@ export const TableRows: React.FC<TableRowProps> = ({ rows, onDelete }) => {
           {cell.type === "string" && cell.data}
           {cell.type === "img" && (
             <img src={cell.data} className="w-full max-w-[220px]" />
+          )}
+          {cell.type === "html" && (
+            <div
+              className="flex w-full flex-row flex-wrap "
+              dangerouslySetInnerHTML={{ __html: cell.data }}
+            ></div>
           )}
         </td>
       ))}

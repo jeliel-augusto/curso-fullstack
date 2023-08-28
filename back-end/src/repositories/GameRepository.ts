@@ -4,8 +4,10 @@ import { PublisherRepository } from "./PublisherRepository";
 export class GameRepository {
   static async save(game: Game) {
     const resultInsert = await knexConnection.raw(`
-            INSERT INTO games(name, img_src, id_publisher) 
-            VALUES('${game.name}', '${game.img_src}', '${game.id_publisher}')
+            INSERT INTO games(name, img_src, id_publisher, price) 
+            VALUES('${game.name}', '${game.img_src}', '${
+      game.id_publisher
+    }', '${game.price ? game.price : 0.99}')
         `);
     const idEntity = resultInsert[0].insertId;
 
@@ -39,7 +41,8 @@ export class GameRepository {
           entity.id!,
           entity.name!,
           entity.img_src!,
-          entity.id_publisher
+          entity.id_publisher,
+          entity.price
         );
         if (game.id_publisher) {
           game.publisher = await PublisherRepository.getById(game.id_publisher);
@@ -52,7 +55,10 @@ export class GameRepository {
     const resultUpdate = await knexConnection.raw(`
         UPDATE games SET name = '${gameUpdated.name}', 
                          img_src = '${gameUpdated.img_src}',
-                         id_publisher = '${gameUpdated.id_publisher}'
+                         id_publisher = '${gameUpdated.id_publisher}',
+                         price = '${
+                           gameUpdated.price ? gameUpdated.price : 0.99
+                         }'
         WHERE id = ${id}
     `);
     return this.getById(id);

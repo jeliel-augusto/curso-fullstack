@@ -6,4 +6,5 @@ export class Game {
   id_publisher?: number;
   publisher!: Publisher;
   img_src!: string;
+  price!: number;
 }
