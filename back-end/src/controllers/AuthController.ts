@@ -41,6 +41,7 @@ export class AuthController {
       return response
         .cookie("token", token, {
           httpOnly: true,
+          sameSite: "none",
         })
         .json({ message: "ok" });
     } catch (e: any) {
