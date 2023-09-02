@@ -1,12 +1,13 @@
 import knex from "knex";
-
+import { config } from "dotenv";
+config();
 export const knexConnection = knex({
-  client: "mysql2",
+  client: "pg",
   connection: {
-    host: "127.0.0.1",
-    port: 3306,
+    host: process.env.DB_HOST,
+    port: +process.env.DB_PORT!,
     user: "root",
-    password: "root@2023",
+    password: process.env.DB_PASSWORD,
     database: "bd_games",
   },
 });
