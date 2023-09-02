@@ -34,6 +34,14 @@ export class AuthAPI {
     return request.data;
   }
   static async login(email: string, password: string) {
+    await axios.post(
+      `/api/login`,
+      { email, password },
+      {
+        withCredentials: true,
+        // credentials: "include",
+      }
+    );
     const request = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
       {
@@ -48,6 +56,14 @@ export class AuthAPI {
     return request.data;
   }
   static async logout() {
+    await axios.post(
+      `/api/logout`,
+      {},
+      {
+        withCredentials: true,
+        // credentials: "include",
+      }
+    );
     const request = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
       {},
