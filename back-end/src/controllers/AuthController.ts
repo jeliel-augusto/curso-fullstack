@@ -44,7 +44,7 @@ export class AuthController {
         .cookie("token", token, {
           httpOnly: true,
           sameSite: "none",
-          secure: process.env.PRODUCTION === "true",
+          secure: true,
         })
         .json({ message: "ok" });
     } catch (e: any) {
