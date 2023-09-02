@@ -32,8 +32,18 @@ export const Sidebar = () => {
         {expanded ? <MdChevronLeft /> : <MdChevronRight />}
       </button>
       <div className="flex flex-1 flex-col h-full gap-3 ">
-        <button className="text-white text-xs">Games</button>
-        <button className="text-white text-xs">Compras</button>
+        <button
+          className="text-white text-xs"
+          onClick={() => router.push("/games")}
+        >
+          Games
+        </button>
+        <button
+          className="text-white text-xs"
+          onClick={() => router.push("/compras")}
+        >
+          Compras
+        </button>
         <button className="text-white text-xs" onClick={logout}>
           Sair
         </button>
