@@ -1,5 +1,6 @@
 import { ItemCompra } from "../entities/ItemCompra";
 import { CompraRepository } from "../repositories/CompraRepository";
+import { AuthService } from "./AuthService";
 import { ClientService } from "./ClientService";
 import { GameService } from "./GameService";
 
@@ -14,7 +15,7 @@ export class CompraService {
   }
 
   static async buyGame(idCliente: number, itensCompra: ItemCompra[]) {
-    await ClientService.getById(idCliente);
+    await AuthService.getById(idCliente);
     await this.validateItensCompra(itensCompra);
     const result = await CompraRepository.buyGame(itensCompra, idCliente);
     return result;

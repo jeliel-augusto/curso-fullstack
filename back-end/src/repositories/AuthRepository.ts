@@ -9,9 +9,9 @@ export class AuthRepository {
   static async createUser(user: User) {
     const hashPassword = await hash(user.passwordHash, 12);
     const userExistents = await knexConnection.raw(`
-      SELECT * FROM user WHERE email = '${user.email}'
+      SELECT * FROM "user" WHERE email = '${user.email}'
     `);
-    const entities = userExistents[0] as Array<{
+    const entities = userExistents.rows as Array<{
       id: number;
       email: string;
       name: string;
@@ -20,17 +20,18 @@ export class AuthRepository {
     }>;
     if (entities[0]) throw new Error("Email já existe");
     const resultInsert = await knexConnection.raw(`
-        INSERT INTO user(name, email, \`passwordHash\`, \`profilePicSrc\`) 
+        INSERT INTO "user" (name, email, "passwordHash", "profilePicSrc") 
         VALUES('${user.name}', '${user.email}', '${hashPassword}', '${user.profilePicSrc}')
+        RETURNING ID
     `);
-    const idEntity = resultInsert[0].insertId;
+    const idEntity = resultInsert.rows[0].id;
     return this.getById(idEntity);
   }
   static async getById(id: number) {
     const list = await knexConnection.raw(`
-      SELECT * FROM user WHERE id = ${id}
+      SELECT * FROM "user" WHERE id = ${id}
     `);
-    const entities = list[0] as Array<{
+    const entities = list.rows as Array<{
       id: number;
       email: string;
       name: string;
@@ -49,9 +50,9 @@ export class AuthRepository {
   }
   static async login(email: string, password: string) {
     const list = await knexConnection.raw(`
-        SELECT * FROM user WHERE email = '${email}' LIMIT 1;
+        SELECT * FROM "user" WHERE email = '${email}' LIMIT 1;
     `);
-    const entities = list[0] as Array<{
+    const entities = list.rows as Array<{
       id: number;
       email: string;
       name: string;

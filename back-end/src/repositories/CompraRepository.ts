@@ -28,8 +28,9 @@ export class CompraRepository {
         const resultInsertCompra = await scope.raw(`
                 INSERT INTO compra (id_cliente)
                 VALUES (${idCliente})
+                RETURNING ID
             `);
-        const idCompra = resultInsertCompra[0].insertId;
+        const idCompra = resultInsertCompra.rows[0].id;
         await CompraRepository.insertIntoCompra(itensCompra, scope, idCompra);
         idCompraResult = idCompra;
       } catch (e) {
@@ -52,6 +53,7 @@ export class CompraRepository {
       await scope.raw(`
                     INSERT INTO item_compra (id_compra, id_games, qtd, preco)
                     VALUES (${idCompra}, ${item.id_games}, ${item.qtd}, ${item.preco})
+                   
                 `);
     }
   }
@@ -60,7 +62,7 @@ export class CompraRepository {
     const itensCompra = await knexConnection.raw(`
       SELECT * FROM item_compra WHERE id_games = ${idGame}
     `);
-    const entitiesItensCompras = itensCompra[0] as Array<ItemCompra>;
+    const entitiesItensCompras = itensCompra.rows as Array<ItemCompra>;
     return entitiesItensCompras.map(
       (value) =>
         new ItemCompra(value.id_compra, value.id_games, value.qtd, value.preco)
@@ -71,7 +73,7 @@ export class CompraRepository {
       SELECT * FROM compra WHERE id_cliente = ${idClient}
       ORDER BY dthr
     `);
-    const entitiesCompras = compras[0] as Array<{
+    const entitiesCompras = compras.rows as Array<{
       id: number;
       id_cliente: number;
       dthr: string;
@@ -92,7 +94,7 @@ export class CompraRepository {
     const compras = await knexConnection.raw(`
       SELECT * FROM compra WHERE id = ${idCompra}
     `);
-    const entityCompra = compras[0][0] as {
+    const entityCompra = compras.rows[0] as {
       id: number;
       id_cliente: number;
       dthr: string;
@@ -112,7 +114,7 @@ export class CompraRepository {
     const itens = await knexConnection.raw(`
         SELECT * FROM item_compra WHERE id_compra = ${idCompra}
       `);
-    const entitiesItens = itens[0] as Array<{
+    const entitiesItens = itens.rows as Array<{
       id_compra: number;
       id_games: number;
       qtd: number;

@@ -10,15 +10,16 @@ import { Publisher } from "../entities/Publisher";
 export class PublisherRepository {
   static async save(publisher: Publisher) {
     const insertResult = await knexConnection.raw(`
-            INSERT INTO publishers(name) VALUES('${publisher.name}')
+            INSERT INTO publishers(name) VALUES('${publisher.name}') RETURNING ID
         `);
-    return insertResult;
+    const idEntity = insertResult.rows[0].id;
+    return this.getById(idEntity);
   }
   static async getAllPublishers() {
     const list = await knexConnection.raw(`
             SELECT * FROM publishers
         `);
-    const entities = list[0] as Array<{
+    const entities = list.rows as Array<{
       id: number;
       name: string;
     }>;
@@ -31,19 +32,19 @@ export class PublisherRepository {
     const updateResult = await knexConnection.raw(`
             UPDATE publishers SET name = '${publisher.name}' WHERE id = ${id}
         `);
-    return updateResult;
+    return this.getById(id);
   }
   static async delete(id: number) {
     const deleteResult = await knexConnection.raw(`
             DELETE FROM publishers WHERE id = ${id}
         `);
-    return deleteResult;
+    return {};
   }
   static async getById(id: number) {
     const list = await knexConnection.raw(
       `SELECT * FROM publishers WHERE id = ${id}`
     );
-    const entities = list[0] as Array<{
+    const entities = list.rows as Array<{
       id: number;
       name: string;
     }>;

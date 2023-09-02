@@ -29,8 +29,8 @@ export class PublisherController {
   static async delete(request: Request, response: Response) {
     try {
       const publisherId = request.params.id;
-      const publisherDeleted = await PublisherService.delete(+publisherId);
-      response.status(200).json(publisherDeleted);
+      await PublisherService.delete(+publisherId);
+      response.status(204).send();
     } catch (e: any) {
       if (e.message === "Publicadora não encontrada!") {
         return response.status(404).json({ message: e.message });

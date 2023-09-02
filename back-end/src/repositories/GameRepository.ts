@@ -7,10 +7,8 @@ export class GameRepository {
             INSERT INTO games(name, img_src, id_publisher, price) 
             VALUES('${game.name}', '${game.img_src}', '${
       game.id_publisher
-    }', '${game.price ? game.price : 0.99}')
-        `);
-    const idEntity = resultInsert[0].insertId;
-
+    }', '${game.price ? game.price : 0.99}') RETURNING ID`);
+    const idEntity = resultInsert.rows[0].id;
     return this.getById(idEntity);
   }
 
@@ -18,19 +16,20 @@ export class GameRepository {
     const result = await knexConnection.raw(`
           UPDATE games SET id_publisher = '${id_publisher}' WHERE id = '${id_game}'
     `);
-    return result;
+    return this.getById(id_game);
   }
 
   static async getAllGames() {
     const list = await knexConnection.raw(`
       SELECT * FROM games
     `);
-    const entities = list[0] as Array<{
+    const entities = list.rows as Array<{
       id: number;
       name: string;
       img_src: string;
       id_publisher?: number;
     }>;
+
     const games = await this.mapGameEntities(entities);
     return games;
   }
@@ -78,7 +77,7 @@ export class GameRepository {
       SELECT * FROM games ${whereClause}
     `);
 
-    const entities = list[0] as Array<{
+    const entities = list.rows as Array<{
       id: number;
       name: string;
       img_src: string;
@@ -98,7 +97,7 @@ export class GameRepository {
     const list = await knexConnection.raw(`
       SELECT * FROM games WHERE id = ${id}
     `);
-    const entities = list[0] as Array<{
+    const entities = list.rows as Array<{
       id: number;
       name: string;
       id_publisher?: number;

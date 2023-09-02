@@ -11,6 +11,7 @@ export const AuthMiddleware = (
   next: () => void
 ) => {
   const authToken = req.cookies.token;
+  // console.log(authToken, req.cookies);
   if (!authToken)
     return res.status(403).json({ message: "Acesso não autorizado." });
   try {

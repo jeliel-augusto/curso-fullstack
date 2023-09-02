@@ -27,19 +27,28 @@ export class CompraAPI {
   }
   static async delete(id: number): Promise<void> {
     await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/client/purchases/${id}`
+      `${process.env.NEXT_PUBLIC_API_URL}/client/purchases/${id}`,
+      {
+        withCredentials: true,
+      }
     );
   }
   static async getById(id: number) {
     const request = await axios.get<Compra>(
-      `${process.env.NEXT_PUBLIC_API_URL}/client/purchases/${id}`
+      `${process.env.NEXT_PUBLIC_API_URL}/client/purchases/${id}`,
+      {
+        withCredentials: true,
+      }
     );
     return request.data;
   }
   static async update(id: number, itensCompra: ItemCompra[]): Promise<Compra> {
     const request = await axios.put<Compra>(
       `${process.env.NEXT_PUBLIC_API_URL}/client/purchases/${id}`,
-      itensCompra
+      itensCompra,
+      {
+        withCredentials: true,
+      }
     );
     return request.data;
   }
