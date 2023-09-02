@@ -5,9 +5,10 @@ export const GameRoutes = Router();
 
 GameRoutes.post("/games", GameController.save);
 GameRoutes.get("/games", GameController.list);
-GameRoutes.get("/games/:id", GameController.getById);
 GameRoutes.get("/games/search", GameController.getByField);
 GameRoutes.put("/games/link-publisher", GameController.linkGameToPublisher);
+
+GameRoutes.get("/games/:id", GameController.getById);
 GameRoutes.put("/games/:id", GameController.update);
 GameRoutes.delete("/games/:id", GameController.delete);
 

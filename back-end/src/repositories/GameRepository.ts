@@ -63,7 +63,7 @@ export class GameRepository {
     return this.getById(id);
   }
   static async getByField(field: string, value: string) {
-    let whereClause = ` WHERE \`${field.replace("'", "").replace("`", "")}\` `;
+    let whereClause = ` WHERE \"${field.replace("'", "").replace("`", "")}\" `;
     if (field === "name") {
       whereClause += ` LIKE '%${value}%'`;
     } else if (field === "publisher") {
