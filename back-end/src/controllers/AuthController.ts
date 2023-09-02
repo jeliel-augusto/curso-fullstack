@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { AuthRepository } from "../repositories/AuthRepository";
 import { AuthService } from "../services/AuthService";
 import cookieParser from "cookie-parser";
+import { config } from "dotenv";
+config();
 export class AuthController {
   static async info(request: Request, response: Response) {
     const id = request["user"].id;
@@ -42,6 +44,7 @@ export class AuthController {
         .cookie("token", token, {
           httpOnly: true,
           sameSite: "none",
+          secure: process.env.PRODUCTION === "true",
         })
         .json({ message: "ok" });
     } catch (e: any) {
